@@ -5,3 +5,5 @@ langchain>=0.1.0
 faiss-cpu
 tiktoken
 langchain-community
+snowflake-connector-python
+snowflake-sqlalchemy
