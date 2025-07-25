@@ -1,3 +1,5 @@
 config.py
 sample_mini.csv
 env
+.idea
+.idea/workspace.xml
