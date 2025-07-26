@@ -1,6 +1,6 @@
-config.py
 sample_mini.csv
 env
+.env
 .idea
 .idea/workspace.xml
 __pycache__
