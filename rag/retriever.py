@@ -9,6 +9,8 @@ embedding_model = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 def get_vector_store():
     docs = [
         Document(page_content="client_col: cust_id --> standard_col: customer_id"),
+        Document(page_content="client_col: customer number --> standard_col: customer_id"),
+        Document(page_content="client_col: customer id --> standard_col: customer_id"),
         Document(page_content="client_col: email_address --> standard_col: email"),
         Document(page_content="client_col: date_of_order --> standard_col: order_date"),
     ]

@@ -7,6 +7,8 @@ import json
 from utils.helpers import read_csv, preprocess_columns
 from agent.etl_agent import map_fields
 from snowflake_loader import load_to_snowflake
+from config import STANDARD_FIELDS
+
 
 st.title("AI-powered ETL Field Mapper")
 
@@ -29,11 +31,16 @@ if uploaded_file:
     if "mapping_json" in st.session_state:
         try:
             mapping = json.loads(st.session_state["mapping_json"])
-            valid_mapping = {k: v for k, v in mapping.items() if k in df.columns}
+            valid_mapping = {
+                client_col: standard_col
+                for client_col, standard_col in mapping.items()
+                if client_col in df.columns and standard_col in STANDARD_FIELDS
+            }
 
             if not valid_mapping:
-                st.warning(" No valid mapped columns found in the uploaded file.")
+                st.warning("No valid mapped columns found matching standard fields.")
             else:
+                # Remove duplicate target fields
                 seen = set()
                 unique_mapping = {}
                 for client_col, standard_col in valid_mapping.items():
@@ -41,24 +48,21 @@ if uploaded_file:
                         unique_mapping[client_col] = standard_col
                         seen.add(standard_col)
                     else:
-                        st.warning(f" Duplicate mapping ignored: multiple client columns mapped to '{standard_col}'")
+                        st.warning(f" Ignored duplicate mapping to standard field '{standard_col}'")
 
                 mapped_df = df.rename(columns=unique_mapping)
-
                 matched_cols = list(unique_mapping.values())
                 matched_df = mapped_df[matched_cols]
 
                 st.write("Mapped Data:", matched_df.head())
 
-
-
                 if st.button("Load Both Tables to Snowflake"):
                     with st.spinner("Uploading both tables to Snowflake..."):
                         try:
                             load_to_snowflake(df.assign(file_name=uploaded_file.name), table_name=f"raw_{file_name}")
-                            load_to_snowflake(mapped_df, table_name=f"mapped_{file_name}")
-                            st.success("Raw and mapped data loaded to Snowflake successfully!")
+                            load_to_snowflake(matched_df, table_name=f"mapped_{file_name}")
+                            st.success(" Raw and mapped data loaded to Snowflake successfully!")
                         except Exception as err:
-                            st.error(f"Snowflake error: {err}")
+                            st.error(f" Snowflake error: {err}")
         except Exception as e:
             st.error(f" Error parsing mapping: {e}")
