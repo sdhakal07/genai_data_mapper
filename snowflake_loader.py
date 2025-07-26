@@ -12,6 +12,7 @@ def load_to_snowflake(df: pd.DataFrame, table_name: str):
     conn = snowflake.connector.connect(**SNOWFLAKE_CONFIG)
     cs = conn.cursor()
     try:
+        cs.execute(f'DROP TABLE IF EXISTS {table_name}')
         create_table_if_not_exists(cs, table_name, df)
         placeholders = ', '.join(['%s'] * len(df.columns))
         columns = ', '.join(df.columns)
