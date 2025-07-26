@@ -1,6 +1,7 @@
 # snowflake_loader.py
 import snowflake.connector
 import pandas as pd
+import numpy as np
 from config import SNOWFLAKE_CONFIG
 
 def create_table_if_not_exists(cursor, table_name, df):
@@ -13,6 +14,8 @@ def load_to_snowflake(df: pd.DataFrame, table_name: str):
     cs = conn.cursor()
     try:
         cs.execute(f'DROP TABLE IF EXISTS {table_name}')
+        df = df.replace({np.nan: None})
+
         create_table_if_not_exists(cs, table_name, df)
         placeholders = ', '.join(['%s'] * len(df.columns))
         columns = ', '.join(df.columns)
