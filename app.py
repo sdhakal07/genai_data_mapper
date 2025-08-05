@@ -78,7 +78,7 @@ if "ai_mapping" in st.session_state:
                     load_to_snowflake(matched_df, table_name=f"mapped_{file_name}")
                     st.success("Raw and mapped data loaded to Snowflake!")
 
-                    # Save mappings for future RAG use (JSON + FAISS)
+                    # Save mappings for future RAG use (JSON + Chroma DB)
                     save_mapping_to_db(deduped_mapping)
                     add_new_mapping(deduped_mapping)
 

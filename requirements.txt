@@ -7,3 +7,4 @@ tiktoken
 langchain-community
 snowflake-connector-python
 snowflake-sqlalchemy
+chromadb
