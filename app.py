@@ -11,9 +11,8 @@ from snowflake_loader import load_to_snowflake
 from config import STANDARD_FIELDS
 from rag.retriever import add_new_mapping
 
-# ==== Your existing Streamlit app code below ====
-st.set_page_config(page_title="ETL Field Mapper", layout="wide")
-st.title("AI-powered ETL Field Mapper")
+st.set_page_config(page_title="Retail Data Mapper", layout="wide")
+st.title("AI-powered Data Mapper")
 
 uploaded_file = st.file_uploader("Upload a client CSV file", type=["csv"])
 if uploaded_file:
